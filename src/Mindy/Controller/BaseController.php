@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindy\Base;
+namespace Mindy\Controller;
 
 /**
  * CController class file.
@@ -12,6 +12,7 @@ namespace Mindy\Base;
  */
 use Mindy\Base\Exception\Exception;
 use Mindy\Base\Exception\HttpException;
+use Mindy\Base\Mindy;
 use Mindy\Helper\Creator;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\BehaviorAccessors;
@@ -162,7 +163,7 @@ class BaseController
 
     /**
      * @param string $id id of this controller
-     * @param Module $module the module that this controller belongs to.
+     * @param \Mindy\Base\Module $module the module that this controller belongs to.
      * @param \Mindy\Http\Request $request
      */
     public function __construct($id, $module = null, Request $request)
@@ -540,7 +541,7 @@ class BaseController
     }
 
     /**
-     * @return Module the module that this controller belongs to. It returns null
+     * @return \Mindy\Base\Module the module that this controller belongs to. It returns null
      * if the controller does not belong to any module
      */
     public function getModule()
@@ -617,6 +618,7 @@ class BaseController
      */
     public function filterAccessControl($filterChain)
     {
+        // TODO refactoring
         $filter = new AccessControlFilter;
         $filter->setRules($this->accessRules());
         $filter->filter($filterChain);
