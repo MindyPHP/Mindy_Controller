@@ -207,9 +207,16 @@ class BaseController
      * This method is invoked right after an action is executed.
      * You may override this method to do some postprocessing for the action.
      * @param Action $action the action just executed.
+     * @param $out
+     * @return string
      */
-    public function afterAction($action)
+    public function afterAction($action, $out)
     {
+        $app = Mindy::app();
+        if($app->hasComponent('middleware')) {
+            $app->middleware->processView($app->getComponent('request'), $out);
+        }
+        echo $out;
     }
 
     /**
@@ -357,8 +364,9 @@ class BaseController
         if (($action = $this->createAction($actionID)) !== null) {
             $signal = Mindy::app()->signal;
             $signal->send($this, 'beforeAction', $this, $action);
+            ob_start();
             $this->runActionWithFilters($action, $this->filters(), $params);
-            $signal->send($this, 'afterAction', $this, $action);
+            $signal->send($this, 'afterAction', $action, ob_get_clean());
         } else {
             $this->missingAction($actionID);
         }
@@ -401,10 +409,12 @@ class BaseController
         $signal = Mindy::app()->signal;
         $results = $signal->send($this, 'beforeAction', $this, $action);
         if ($results->getLast()->value) {
-            if ($action->runWithParams($params) === false) {
+            ob_start();
+            $status = $action->runWithParams($params);
+            if($status === false) {
                 $this->invalidActionParams($action);
             } else {
-                $signal->send($this, 'afterAction', $this, $action);
+                $signal->send($this, 'afterAction', $action, ob_get_clean());
             }
         }
         $this->_action = $priorAction;
