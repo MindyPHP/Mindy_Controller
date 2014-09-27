@@ -215,6 +215,7 @@ class BaseController
         $app = Mindy::app();
         if($app->hasComponent('middleware')) {
             $app->middleware->processView($app->getComponent('request'), $out);
+            $app->middleware->processResponse($app->getComponent('request'));
         }
         echo $out;
     }
