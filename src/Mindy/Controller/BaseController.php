@@ -411,8 +411,8 @@ class BaseController
         $results = $signal->send($this, 'beforeAction', $this, $action);
         if ($results->getLast()->value) {
             ob_start();
-            $status = $action->runWithParams($params);
-            if($status === false) {
+            if($action->runWithParams($params) === false) {
+                ob_end_clean();
                 $this->invalidActionParams($action);
             } else {
                 $signal->send($this, 'afterAction', $action, ob_get_clean());
@@ -515,8 +515,11 @@ class BaseController
      */
     public function missingAction($actionID)
     {
-        throw new HttpException(404, Mindy::t('yii', 'The system is unable to find the requested action "{action}".',
-            ['{action}' => $actionID == '' ? $this->defaultAction : $actionID]));
+//        $msg = Mindy::t('yii', 'The system is unable to find the requested action "{action}".',
+//            ['{action}' => $actionID == '' ? $this->defaultAction : $actionID]);
+        $msg = strtr('The system is unable to find the requested action "{action}".',
+            ['{action}' => $actionID == '' ? $this->defaultAction : $actionID]);
+        throw new HttpException(404, $msg);
     }
 
     /**

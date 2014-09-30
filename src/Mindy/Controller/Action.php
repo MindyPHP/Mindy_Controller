@@ -109,12 +109,12 @@ abstract class Action implements IAction
      */
     protected function runWithParamsInternal($object, $method, $params)
     {
-        $ps = array();
+        $ps = [];
         foreach ($method->getParameters() as $i => $param) {
             $name = $param->getName();
             if (isset($params[$name])) {
                 if ($param->isArray()) {
-                    $ps[] = is_array($params[$name]) ? $params[$name] : array($params[$name]);
+                    $ps[] = is_array($params[$name]) ? $params[$name] : [$params[$name]];
                 } elseif (!is_array($params[$name])) {
                     $ps[] = $params[$name];
                 } else {
