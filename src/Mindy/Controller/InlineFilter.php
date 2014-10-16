@@ -10,7 +10,7 @@ namespace Mindy\Controller;
  * @copyright 2008-2013 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-use Mindy\Base\Exception\Exception;
+use Mindy\Exception\Exception;
 use Mindy\Base\Mindy;
 
 /**
@@ -46,7 +46,7 @@ class InlineFilter extends Filter
             $filter->name = $filterName;
             return $filter;
         } else {
-            throw new Exception(Mindy::t('yii', 'Filter "{filter}" is invalid. Controller "{class}" does not have the filter method "filter{filter}".', [
+            throw new Exception(Mindy::t('base', 'Filter "{filter}" is invalid. Controller "{class}" does not have the filter method "filter{filter}".', [
                 '{filter}' => $filterName,
                 '{class}' => get_class($controller)
             ]));

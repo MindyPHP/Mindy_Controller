@@ -27,7 +27,7 @@
 
 namespace Mindy\Controller;
 
-use Mindy\Base\Exception\HttpException;
+use Mindy\Exception\HttpException;
 use Mindy\Base\Mindy;
 
 /**
@@ -184,15 +184,16 @@ class AccessControlFilter extends Filter
         } elseif ($this->message !== null) {
             return $this->message;
         } else {
-            return Mindy::t('yii', 'You are not authorized to perform this action.');
+            return Mindy::t('base', 'You are not authorized to perform this action.');
         }
     }
 
     /**
      * Denies the access of the user.
      * This method is invoked when access check fails.
-     * @param IWebUser $user the current user
+     * @param $user the current user
      * @param string $message the error message to be displayed
+     * @throws \Mindy\Exception\HttpException
      */
     protected function accessDenied($user, $message)
     {

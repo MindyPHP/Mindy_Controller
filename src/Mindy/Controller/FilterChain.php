@@ -14,7 +14,7 @@
 
 namespace Mindy\Controller;
 
-use Mindy\Base\Exception\Exception;
+use Mindy\Exception\Exception;
 use Mindy\Base\Interfaces\IFilter;
 use Mindy\Base\Mindy;
 use Mindy\Helper\Creator;
@@ -72,7 +72,7 @@ class FilterChain extends BaseList
      * @param Controller $controller the controller who executes the action.
      * @param Action $action the action being filtered by this chain.
      * @param array $filters list of filters to be applied to the action.
-     * @throws \Mindy\Base\Exception\Exception
+     * @throws \Mindy\Exception\Exception
      * @return FilterChain
      */
     public static function create($controller, $action, $filters)
@@ -93,7 +93,7 @@ class FilterChain extends BaseList
             } elseif (is_array($filter)) {
                 // array('path.to.class [+|- action1, action2]','param1'=>'value1',...)
                 if (!isset($filter[0])) {
-                    throw new Exception(Mindy::t('yii', 'The first element in a filter configuration must be the filter class.'));
+                    throw new Exception(Mindy::t('base', 'The first element in a filter configuration must be the filter class.'));
                 }
                 $filterClass = $filter[0];
                 unset($filter[0]);
@@ -131,7 +131,7 @@ class FilterChain extends BaseList
         if ($item instanceof IFilter) {
             parent::insertAt($index, $item);
         } else {
-            throw new Exception(Mindy::t('yii', 'FilterChain can only take objects implementing the IFilter interface.'));
+            throw new Exception(Mindy::t('base', 'FilterChain can only take objects implementing the IFilter interface.'));
         }
     }
 

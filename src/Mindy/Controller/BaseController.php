@@ -10,8 +10,8 @@ namespace Mindy\Controller;
  * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-use Mindy\Base\Exception\Exception;
-use Mindy\Base\Exception\HttpException;
+use Mindy\Exception\Exception;
+use Mindy\Exception\HttpException;
 use Mindy\Base\Mindy;
 use Mindy\Helper\Creator;
 use Mindy\Helper\Traits\Accessors;
@@ -425,12 +425,12 @@ class BaseController
      * This method is invoked when the request parameters do not satisfy the requirement of the specified action.
      * The default implementation will throw a 400 HTTP exception.
      * @param Action $action the action being executed
-     * @throws \Mindy\Base\Exception\HttpException
+     * @throws \Mindy\Exception\HttpException
      * @since 1.1.7
      */
     public function invalidActionParams($action)
     {
-        throw new HttpException(400, Mindy::t('yii', 'Your request is invalid.'));
+        throw new HttpException(400, Mindy::t('base', 'Your request is invalid.'));
     }
 
     /**
@@ -438,7 +438,7 @@ class BaseController
      * The action can be either an inline action or an object.
      * The latter is created by looking up the action map specified in {@link actions}.
      * @param string $actionID ID of the action. If empty, the {@link defaultAction default action} will be used.
-     * @throws \Mindy\Base\Exception\Exception
+     * @throws \Mindy\Exception\Exception
      * @return Action the action instance, null if the action does not exist.
      * @see actions
      */
@@ -452,7 +452,7 @@ class BaseController
         } else {
             $action = $this->createActionFromMap($this->actions(), $actionID, $actionID);
             if ($action !== null && !method_exists($action, 'run')) {
-                throw new Exception(Mindy::t('yii', 'Action class {class} must implement the "run" method.', array('{class}' => get_class($action))));
+                throw new Exception(Mindy::t('base', 'Action class {class} must implement the "run" method.', array('{class}' => get_class($action))));
             }
             return $action;
         }
@@ -467,7 +467,7 @@ class BaseController
      * @param string $actionID the action ID that has its prefix stripped off
      * @param string $requestActionID the originally requested action ID
      * @param array $config the action configuration that should be applied on top of the configuration specified in the map
-     * @throws \Mindy\Base\Exception\Exception
+     * @throws \Mindy\Exception\Exception
      * @return Action the action instance, null if the action does not exist.
      */
     protected function createActionFromMap($actionMap, $actionID, $requestActionID, $config = [])
@@ -499,7 +499,7 @@ class BaseController
                 }
             }
         } else {
-            throw new Exception(Mindy::t('yii', 'Object configuration must be an array containing a "class" element.'));
+            throw new Exception(Mindy::t('base', 'Object configuration must be an array containing a "class" element.'));
         }
 
         $map = call_user_func([$providerType, 'actions']);
@@ -515,11 +515,8 @@ class BaseController
      */
     public function missingAction($actionID)
     {
-//        $msg = Mindy::t('yii', 'The system is unable to find the requested action "{action}".',
-//            ['{action}' => $actionID == '' ? $this->defaultAction : $actionID]);
-        $msg = strtr('The system is unable to find the requested action "{action}".',
-            ['{action}' => $actionID == '' ? $this->defaultAction : $actionID]);
-        throw new HttpException(404, $msg);
+        throw new HttpException(404, Mindy::t('base', 'The system is unable to find the requested action "{action}".',
+            ['{action}' => $actionID == '' ? $this->defaultAction : $actionID]));
     }
 
     /**
@@ -605,7 +602,7 @@ class BaseController
         if ($this->r->isPost) {
             $filterChain->run();
         } else {
-            throw new HttpException(400, Mindy::t('yii', 'Your request is invalid.'));
+            throw new HttpException(400, Mindy::t('base', 'Your request is invalid.'));
         }
     }
 
@@ -620,7 +617,7 @@ class BaseController
         if ($this->r->isAjax) {
             $filterChain->run();
         } else {
-            throw new HttpException(400, Mindy::t('yii', 'Your request is invalid.'));
+            throw new HttpException(400, Mindy::t('base', 'Your request is invalid.'));
         }
     }
 
