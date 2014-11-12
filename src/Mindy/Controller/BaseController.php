@@ -159,7 +159,7 @@ class BaseController
     /**
      * @var \Mindy\Http\Request
      */
-    private $_r;
+    private $_request;
 
     /**
      * @param string $id id of this controller
@@ -170,7 +170,7 @@ class BaseController
     {
         $this->_id = $id;
         $this->_module = $module;
-        $this->_r = $request;
+        $this->_request = $request;
 
         $signal = Mindy::app()->signal;
         $signal->handler($this, 'beforeAction', [$this, 'beforeAction']);
@@ -187,9 +187,21 @@ class BaseController
         return [];
     }
 
+    /**
+     * @DEPRECATED
+     * @return Request
+     */
     public function getR()
     {
-        return $this->_r;
+        return $this->_request;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->_request;
     }
 
     /**
