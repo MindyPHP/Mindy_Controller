@@ -74,6 +74,7 @@ use Mindy\Http\Traits\HttpErrors;
  * @property string $id ID of the controller.
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any).
  * @property string $route The route (module ID, controller ID and action ID) of the current request.
+ * @property \Mindy\Http\Request $request The request component
  * @property Module $module The module that this controller belongs to. It returns null
  * if the controller does not belong to any module.
  * @property string $viewPath The directory containing the view files for this controller. Defaults to 'protected/views/ControllerID'.
@@ -84,8 +85,7 @@ use Mindy\Http\Traits\HttpErrors;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @package system.web
  * @since 1.0
- */
-/**
+ *
  * CBaseController is the base class for {@link CController} and {@link CWidget}.
  *
  * It provides the common functionalities shared by controllers who need to render views.
@@ -226,8 +226,8 @@ class BaseController
     {
         $app = Mindy::app();
         if($app->hasComponent('middleware')) {
-            $app->middleware->processView($app->getComponent('request'), $out);
-            $app->middleware->processResponse($app->getComponent('request'));
+            $app->middleware->processView($this->getRequest(), $out);
+            $app->middleware->processResponse($this->getRequest());
         }
         echo $out;
     }
