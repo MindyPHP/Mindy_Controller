@@ -210,7 +210,7 @@ class BaseController
      * @param Action $action the action to be executed.
      * @return boolean whether the action should be executed.
      */
-    public function beforeAction($action)
+    public function beforeAction($owner, $action)
     {
         return true;
     }
