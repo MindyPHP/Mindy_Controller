@@ -10,11 +10,10 @@ namespace Mindy\Controller;
  * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+use Mindy\Base\Mindy;
 use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
-use Mindy\Base\Mindy;
 use Mindy\Helper\Creator;
-use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\BehaviorAccessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Http\Request;
@@ -225,7 +224,7 @@ class BaseController
     public function afterAction($action, $out)
     {
         $app = Mindy::app();
-        if($app->hasComponent('middleware')) {
+        if ($app->hasComponent('middleware')) {
             $app->middleware->processView($this->getRequest(), $out);
             $app->middleware->processResponse($this->getRequest());
         }
@@ -423,7 +422,7 @@ class BaseController
         $results = $signal->send($this, 'beforeAction', $this, $action);
         if ($results->getLast()->value) {
             ob_start();
-            if($action->runWithParams($params) === false) {
+            if ($action->runWithParams($params) === false) {
                 ob_end_clean();
                 $this->invalidActionParams($action);
             } else {
@@ -569,7 +568,7 @@ class BaseController
      */
     public function getModule()
     {
-        if($this->_module === null) {
+        if ($this->_module === null) {
             $reflect = new \ReflectionClass(get_class($this));
             $namespace = $reflect->getNamespaceName();
             $segments = explode('\\', $namespace);
