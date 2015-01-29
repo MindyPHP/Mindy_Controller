@@ -146,7 +146,7 @@ class BaseController
     /**
      * Name of the hidden field storing persistent page states.
      */
-    const STATE_INPUT_NAME = 'YII_PAGE_STATE';
+    const STATE_INPUT_NAME = 'MINDY_PAGE_STATE';
     /**
      * @var string the name of the default action. Defaults to 'index'.
      */
