@@ -1,16 +1,4 @@
 <?php
-/**
- *
- *
- * All rights reserved.
- *
- * @author Falaleev Maxim
- * @email max@studio107.ru
- * @version 1.0
- * @company Studio107
- * @site http://studio107.ru
- * @date 10/06/14.06.2014 13:47
- */
 
 namespace Mindy\Controller;
 
@@ -21,28 +9,18 @@ use Mindy\Helper\Creator;
 use Mindy\Utils\BaseList;
 
 /**
- * FilterChain class file.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
- * @copyright 2008-2013 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
-
-/**
  * FilterChain represents a list of filters being applied to an action.
  *
  * FilterChain executes the filter list by {@link run()}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web.filters
+ * @package Mindy\Controller
  * @since 1.0
  */
 class FilterChain extends BaseList
 {
     /**
-     * @var Controller the controller who executes the action.
+     * @var BaseController the controller who executes the action.
      */
     public $controller;
     /**
@@ -57,7 +35,7 @@ class FilterChain extends BaseList
 
     /**
      * Constructor.
-     * @param Controller $controller the controller who executes the action.
+     * @param BaseController $controller the controller who executes the action.
      * @param Action $action the action being filtered by this chain.
      */
     public function __construct($controller, $action)
@@ -69,7 +47,7 @@ class FilterChain extends BaseList
     /**
      * FilterChain factory method.
      * This method creates a FilterChain instance.
-     * @param Controller $controller the controller who executes the action.
+     * @param BaseController $controller the controller who executes the action.
      * @param Action $action the action being filtered by this chain.
      * @param array $filters list of filters to be applied to the action.
      * @throws \Mindy\Exception\Exception

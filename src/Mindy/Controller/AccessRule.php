@@ -25,7 +25,7 @@ use Mindy\Helper\Traits\Configurator;
  * CAccessRule represents an access rule that is managed by {@link CAccessControlFilter}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web.auth
+ * @package Mindy\Controller
  * @since 1.0
  */
 class AccessRule

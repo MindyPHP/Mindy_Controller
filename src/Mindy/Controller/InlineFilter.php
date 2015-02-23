@@ -2,14 +2,6 @@
 
 namespace Mindy\Controller;
 
-/**
- * CInlineFilter class file.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
- * @copyright 2008-2013 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 use Mindy\Exception\Exception;
 use Mindy\Base\Mindy;
 
@@ -20,7 +12,7 @@ use Mindy\Base\Mindy;
  * in the controller, where the name 'XYZ' can be retrieved from the {@link name} property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web.filters
+ * @package Mindy\Controller
  * @since 1.0
  */
 class InlineFilter extends Filter

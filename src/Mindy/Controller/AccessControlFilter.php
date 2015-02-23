@@ -1,28 +1,7 @@
 <?php
-/**
- *
- *
- * All rights reserved.
- *
- * @author Falaleev Maxim
- * @email max@studio107.ru
- * @version 1.0
- * @company Studio107
- * @site http://studio107.ru
- * @date 08/09/14.09.2014 18:25
- */
 
 /**
  * TODO refactoring
- */
-
-/**
- * CAccessControlFilter class file.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
- * @copyright 2008-2013 Yii Software LLC
- * @license http://www.yiiframework.com/license/
  */
 
 namespace Mindy\Controller;
@@ -95,7 +74,7 @@ use Mindy\Base\Mindy;
  * @property array $rules List of access rules.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web.auth
+ * @package Mindy\Controller
  * @since 1.0
  */
 class AccessControlFilter extends Filter

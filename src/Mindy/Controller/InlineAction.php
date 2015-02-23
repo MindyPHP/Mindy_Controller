@@ -1,30 +1,8 @@
 <?php
-/**
- *
- *
- * All rights reserved.
- *
- * @author Falaleev Maxim
- * @email max@studio107.ru
- * @version 1.0
- * @company Studio107
- * @site http://studio107.ru
- * @date 10/06/14.06.2014 19:50
- */
-
-/**
- * CInlineAction class file.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
- * @copyright 2008-2013 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Mindy\Controller;
 
 use ReflectionMethod;
-
 
 /**
  * CInlineAction represents an action that is defined as a controller method.
@@ -32,7 +10,7 @@ use ReflectionMethod;
  * The method name is like 'actionXYZ' where 'XYZ' stands for the action name.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web.actions
+ * @package Mindy\Controller
  * @since 1.0
  */
 class InlineAction extends Action

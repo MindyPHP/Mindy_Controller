@@ -2,14 +2,6 @@
 
 namespace Mindy\Controller;
 
-/**
- * CController class file.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 use Mindy\Base\Mindy;
 use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
@@ -74,7 +66,7 @@ use Mindy\Http\Traits\HttpErrors;
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any).
  * @property string $route The route (module ID, controller ID and action ID) of the current request.
  * @property \Mindy\Http\Request $request The request component
- * @property Module $module The module that this controller belongs to. It returns null
+ * @property \Mindy\Base\Module $module The module that this controller belongs to. It returns null
  * if the controller does not belong to any module.
  * @property string $viewPath The directory containing the view files for this controller. Defaults to 'protected/views/ControllerID'.
  * @property Map $clips The list of clips.
@@ -136,7 +128,7 @@ use Mindy\Http\Traits\HttpErrors;
  * </pre>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web
+ * @package Mindy\Controller
  * @since 1.0
  */
 class BaseController
