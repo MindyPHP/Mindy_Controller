@@ -52,7 +52,7 @@ class InlineFilter extends Filter
      */
     public function filter($filterChain)
     {
-        $method = 'filter' . $this->name;
+        $method = 'filter' . ucfirst($this->name);
         $filterChain->controller->$method($filterChain);
     }
 }
