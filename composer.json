@@ -1,7 +1,7 @@
 {
     "name": "mindy/controller",
     "homepage": "https://github.com/studio107/Mindy_Controller",
-    "version": "0.1",
+    "version": "0.1.1",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -10,7 +10,7 @@
     },
     "require": {
         "php": ">=5.4",
-        "mindy/base": "0.2"
+        "mindy/base": "0.*"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.32",
