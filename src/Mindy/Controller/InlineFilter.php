@@ -2,6 +2,14 @@
 
 namespace Mindy\Controller;
 
+/**
+ * CInlineFilter class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright 2008-2013 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 use Mindy\Exception\Exception;
 use Mindy\Base\Mindy;
 
@@ -12,7 +20,7 @@ use Mindy\Base\Mindy;
  * in the controller, where the name 'XYZ' can be retrieved from the {@link name} property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package Mindy\Controller
+ * @package system.web.filters
  * @since 1.0
  */
 class InlineFilter extends Filter
@@ -26,7 +34,7 @@ class InlineFilter extends Filter
      * Creates an inline filter instance.
      * The creation is based on a string describing the inline method name
      * and action names that the filter shall or shall not apply to.
-     * @param Controller $controller the controller who hosts the filter methods
+     * @param \Mindy\Controller\BaseController $controller the controller who hosts the filter methods
      * @param string $filterName the filter name
      * @return InlineFilter the created instance
      * @throws Exception if the filter method does not exist
@@ -52,7 +60,7 @@ class InlineFilter extends Filter
      */
     public function filter($filterChain)
     {
-        $method = 'filter' . ucfirst($this->name);
+        $method = 'filter' . $this->name;
         $filterChain->controller->$method($filterChain);
     }
 }

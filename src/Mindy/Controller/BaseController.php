@@ -2,11 +2,18 @@
 
 namespace Mindy\Controller;
 
+/**
+ * CController class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 use Mindy\Base\Mindy;
 use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
 use Mindy\Helper\Creator;
-use Mindy\Helper\Traits\BehaviorAccessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Http\Request;
 use Mindy\Http\Traits\HttpErrors;
@@ -66,7 +73,7 @@ use Mindy\Http\Traits\HttpErrors;
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any).
  * @property string $route The route (module ID, controller ID and action ID) of the current request.
  * @property \Mindy\Http\Request $request The request component
- * @property \Mindy\Base\Module $module The module that this controller belongs to. It returns null
+ * @property Module $module The module that this controller belongs to. It returns null
  * if the controller does not belong to any module.
  * @property string $viewPath The directory containing the view files for this controller. Defaults to 'protected/views/ControllerID'.
  * @property Map $clips The list of clips.
@@ -77,72 +84,18 @@ use Mindy\Http\Traits\HttpErrors;
  * @package system.web
  * @since 1.0
  *
- * CBaseController is the base class for {@link CController} and {@link CWidget}.
- *
- * It provides the common functionalities shared by controllers who need to render views.
- *
- * CBaseController also implements the support for the following features:
- * <ul>
- * <li>{@link CClipWidget Clips} : a clip is a piece of captured output that can be inserted elsewhere.</li>
- * <li>{@link CWidget Widgets} : a widget is a self-contained sub-controller with its own view and model.</li>
- * <li>{@link COutputCache Fragment cache} : fragment cache selectively caches a portion of the output.</li>
- * </ul>
- *
- * To use a widget in a view, use the following in the view:
- * <pre>
- * $this->widget('path.to.widgetClass',array('property1'=>'value1',...));
- * </pre>
- * or
- * <pre>
- * $this->beginWidget('path.to.widgetClass',array('property1'=>'value1',...));
- * // ... display other contents here
- * $this->endWidget();
- * </pre>
- *
- * To create a clip, use the following:
- * <pre>
- * $this->beginClip('clipID');
- * // ... display the clip contents
- * $this->endClip();
- * </pre>
- * Then, in a different view or place, the captured clip can be inserted as:
- * <pre>
- * echo $this->clips['clipID'];
- * </pre>
- *
- * Note that $this in the code above refers to current controller so, for example,
- * if you need to access clip from a widget where $this refers to widget itself
- * you need to do it the following way:
- *
- * <pre>
- * echo $this->getController()->clips['clipID'];
- * </pre>
- *
- * To use fragment cache, do as follows,
- * <pre>
- * if($this->beginCache('cacheID',array('property1'=>'value1',...))
- * {
- *     // ... display the content to be cached here
- *    $this->endCache();
- * }
- * </pre>
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package Mindy\Controller
+ * @package system.web
  * @since 1.0
  */
 class BaseController
 {
-    use Configurator, BehaviorAccessors, HttpErrors;
+    use Configurator, HttpErrors;
 
     /**
      * Name of the hidden field storing persistent page states.
      */
     const STATE_INPUT_NAME = 'MINDY_PAGE_STATE';
-    /**
-     * @var string the name of the default action. Defaults to 'index'.
-     */
-    public $defaultAction = 'index';
 
     private $_id;
     private $_action;
@@ -166,8 +119,6 @@ class BaseController
         $signal = Mindy::app()->signal;
         $signal->handler($this, 'beforeAction', [$this, 'beforeAction']);
         $signal->handler($this, 'afterAction', [$this, 'afterAction']);
-
-        $this->attachBehaviors($this->behaviors());
     }
 
     /**
@@ -176,15 +127,6 @@ class BaseController
     public function getCsrfExempt()
     {
         return [];
-    }
-
-    /**
-     * @DEPRECATED
-     * @return Request
-     */
-    public function getR()
-    {
-        return $this->_request;
     }
 
     /**
@@ -320,41 +262,6 @@ class BaseController
     }
 
     /**
-     * Returns a list of behaviors that this controller should behave as.
-     * The return value should be an array of behavior configurations indexed by
-     * behavior names. Each behavior configuration can be either a string specifying
-     * the behavior class or an array of the following structure:
-     * <pre>
-     * 'behaviorName'=>array(
-     *     'class'=>'path.to.BehaviorClass',
-     *     'property1'=>'value1',
-     *     'property2'=>'value2',
-     * )
-     * </pre>
-     *
-     * Note, the behavior classes must implement {@link IBehavior} or extend from
-     * {@link CBehavior}. Behaviors declared in this method will be attached
-     * to the controller when it is instantiated.
-     *
-     * For more details about behaviors, see {@link CComponent}.
-     * @return array the behavior configurations (behavior name=>behavior configuration)
-     */
-    public function behaviors()
-    {
-        return [];
-    }
-
-    /**
-     * Returns the access rules for this controller.
-     * Override this method if you use the {@link filterAccessControl accessControl} filter.
-     * @return array list of access rules. See {@link CAccessControlFilter} for details about rule specification.
-     */
-    public function accessRules()
-    {
-        return [];
-    }
-
-    /**
      * Runs the named action.
      * Filters specified via {@link filters()} will be applied.
      * @param string $actionID action ID
@@ -440,73 +347,30 @@ class BaseController
      * Creates the action instance based on the action name.
      * The action can be either an inline action or an object.
      * The latter is created by looking up the action map specified in {@link actions}.
-     * @param string $actionID ID of the action. If empty, the {@link defaultAction default action} will be used.
+     * @param string $actionID ID of the action.
      * @throws \Mindy\Exception\Exception
      * @return Action the action instance, null if the action does not exist.
      * @see actions
      */
     public function createAction($actionID)
     {
-        if ($actionID === '') {
-            $actionID = $this->defaultAction;
-        }
         if (method_exists($this, 'action' . $actionID) && strcasecmp($actionID, 's')) { // we have actions method
             return new InlineAction($this, $actionID);
-        } else {
-            $action = $this->createActionFromMap($this->actions(), $actionID, $actionID);
-            if ($action !== null && !method_exists($action, 'run')) {
-                throw new Exception(Mindy::t('base', 'Action class {class} must implement the "run" method.', array('{class}' => get_class($action))));
-            }
-            return $action;
-        }
-    }
-
-    /**
-     * Creates the action instance based on the action map.
-     * This method will check to see if the action ID appears in the given
-     * action map. If so, the corresponding configuration will be used to
-     * create the action instance.
-     * @param array $actionMap the action map
-     * @param string $actionID the action ID that has its prefix stripped off
-     * @param string $requestActionID the originally requested action ID
-     * @param array $config the action configuration that should be applied on top of the configuration specified in the map
-     * @throws \Mindy\Exception\Exception
-     * @return Action the action instance, null if the action does not exist.
-     */
-    protected function createActionFromMap($actionMap, $actionID, $requestActionID, $config = [])
-    {
-        if (($pos = strpos($actionID, '.')) === false && isset($actionMap[$actionID])) {
-            $baseConfig = is_array($actionMap[$actionID]) ? $actionMap[$actionID] : ['class' => $actionMap[$actionID]];
-            return Creator::createObject(empty($config) ? $baseConfig : array_merge($baseConfig, $config), $this, $requestActionID);
-        } elseif ($pos === false) {
-            return null;
         }
 
-        // the action is defined in a provider
-        $prefix = substr($actionID, 0, $pos + 1);
-        if (!isset($actionMap[$prefix])) {
-            return null;
-        }
-        $actionID = (string)substr($actionID, $pos + 1);
-
-        $provider = $actionMap[$prefix];
-        if (is_string($provider)) {
-            $providerType = $provider;
-        } elseif (is_array($provider) && isset($provider['class'])) {
-            $providerType = $provider['class'];
-            if (isset($provider[$actionID])) {
-                if (is_string($provider[$actionID])) {
-                    $config = array_merge(['class' => $provider[$actionID]], $config);
-                } else {
-                    $config = array_merge($provider[$actionID], $config);
-                }
-            }
-        } else {
-            throw new Exception(Mindy::t('base', 'Object configuration must be an array containing a "class" element.'));
+        $actions = $this->actions();
+        $action = null;
+        if (isset($actions[$actionID])) {
+            $config = is_array($actions[$actionID]) ? $actions[$actionID] : [
+                'class' => $actions[$actionID]
+            ];
+            $action = Creator::createObject($config, $this, $actionID);
         }
 
-        $map = call_user_func([$providerType, 'actions']);
-        return $this->createActionFromMap($map, $actionID, $requestActionID, $config);
+        if ($action !== null && !method_exists($action, 'run')) {
+            throw new Exception(Mindy::t('base', 'Action class {class} must implement the "run" method.', array('{class}' => get_class($action))));
+        }
+        return $action;
     }
 
     /**
@@ -567,74 +431,5 @@ class BaseController
             $this->_module = Mindy::app()->getModule($segments[1]);
         }
         return $this->_module;
-    }
-
-    /**
-     * Processes the request using another controller action.
-     * This is like {@link redirect}, but the user browser's URL remains unchanged.
-     * In most cases, you should call {@link redirect} instead of this method.
-     * @param string $route the route of the new controller action. This can be an action ID, or a complete route
-     * with module ID (optional in the current module), controller ID and action ID. If the former, the action is assumed
-     * to be located within the current controller.
-     * @param boolean $exit whether to end the application after this call. Defaults to true.
-     * @since 1.1.0
-     */
-    public function forward($route, $exit = true)
-    {
-        if (strpos($route, '/') === false) {
-            $this->run($route);
-        } else {
-            if ($route[0] !== '/' && ($module = $this->getModule()) !== null) {
-                $route = $module->getId() . '/' . $route;
-            }
-            Mindy::app()->runController($route);
-        }
-        if ($exit) {
-            Mindy::app()->end();
-        }
-    }
-
-    /**
-     * The filter method for 'postOnly' filter.
-     * This filter throws an exception (HttpException with code 400) if the applied action is receiving a non-POST request.
-     * @param FilterChain $filterChain the filter chain that the filter is on.
-     * @throws HttpException if the current request is not a POST request
-     */
-    public function filterPostOnly($filterChain)
-    {
-        if ($this->r->isPost) {
-            $filterChain->run();
-        } else {
-            throw new HttpException(400, Mindy::t('base', 'Your request is invalid.'));
-        }
-    }
-
-    /**
-     * The filter method for 'ajaxOnly' filter.
-     * This filter throws an exception (HttpException with code 400) if the applied action is receiving a non-AJAX request.
-     * @param FilterChain $filterChain the filter chain that the filter is on.
-     * @throws HttpException if the current request is not an AJAX request.
-     */
-    public function filterAjaxOnly($filterChain)
-    {
-        if ($this->r->isAjax) {
-            $filterChain->run();
-        } else {
-            throw new HttpException(400, Mindy::t('base', 'Your request is invalid.'));
-        }
-    }
-
-    /**
-     * The filter method for 'accessControl' filter.
-     * This filter is a wrapper of {@link CAccessControlFilter}.
-     * To use this filter, you must override {@link accessRules} method.
-     * @param FilterChain $filterChain the filter chain that the filter is on.
-     */
-    public function filterAccessControl($filterChain)
-    {
-        // TODO refactoring
-        $filter = new AccessControlFilter;
-        $filter->setRules($this->accessRules());
-        $filter->filter($filterChain);
     }
 }

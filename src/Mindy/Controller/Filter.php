@@ -1,10 +1,29 @@
 <?php
+/**
+ *
+ *
+ * All rights reserved.
+ *
+ * @author Falaleev Maxim
+ * @email max@studio107.ru
+ * @version 1.0
+ * @company Studio107
+ * @site http://studio107.ru
+ * @date 10/06/14.06.2014 13:46
+ */
 
 namespace Mindy\Controller;
 
+/**
+ * CFilter class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright 2008-2013 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 use Mindy\Base\Interfaces\IFilter;
-use Mindy\Helper\Traits\BehaviorAccessors;
-use Mindy\Helper\Traits\Configurator;
+use Mindy\Helper\Traits\Accessors;
 
 /**
  * CFilter is the base class for all filters.
@@ -17,12 +36,12 @@ use Mindy\Helper\Traits\Configurator;
  * before the action, and {@link postFilter()} for filtering logic after the action.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package Mindy\Controller
+ * @package system.web.filters
  * @since 1.0
  */
 class Filter implements IFilter
 {
-    use Configurator, BehaviorAccessors;
+    use Accessors;
 
     /**
      * Performs the filtering.

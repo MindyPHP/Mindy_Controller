@@ -1,7 +1,27 @@
 <?php
+/**
+ *
+ *
+ * All rights reserved.
+ *
+ * @author Falaleev Maxim
+ * @email max@studio107.ru
+ * @version 1.0
+ * @company Studio107
+ * @site http://studio107.ru
+ * @date 10/06/14.06.2014 13:50
+ */
 
 namespace Mindy\Controller;
 
+/**
+ * CAction class file.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright 2008-2013 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 use Mindy\Base\Interfaces\IAction;
 use Mindy\Helper\Traits\BehaviorAccessors;
 use Mindy\Helper\Traits\Configurator;
@@ -18,25 +38,25 @@ use ReflectionMethod;
  *
  * An action instance can access its controller via {@link getController controller} property.
  *
- * @property BaseController $controller The controller who owns this action.
+ * @property \Mindy\Controller\BaseController $controller The controller who owns this action.
  * @property string $id Id of this action.
  *
  * @method run() executes action
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package Mindy\Controller
+ * @package system.web.actions
  * @since 1.0
  */
 abstract class Action implements IAction
 {
-    use Configurator, BehaviorAccessors;
+    use BehaviorAccessors;
 
     private $_id;
     private $_controller;
 
     /**
      * Constructor.
-     * @param BaseController $controller the controller who owns this action.
+     * @param \Mindy\Controller\BaseController $controller the controller who owns this action.
      * @param string $id id of the action.
      */
     public function __construct($controller, $id)
@@ -46,7 +66,7 @@ abstract class Action implements IAction
     }
 
     /**
-     * @return BaseController the controller who owns this action.
+     * @return \Mindy\Controller\BaseController the controller who owns this action.
      */
     public function getController()
     {
