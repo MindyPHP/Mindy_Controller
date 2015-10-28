@@ -92,11 +92,11 @@ class FilterChain extends BaseList
                 }
             } elseif (is_array($filter)) {
                 // array('path.to.class [+|- action1, action2]','param1'=>'value1',...)
-                if (!isset($filter[0])) {
+                if (!isset($filter['class'])) {
                     throw new Exception(Mindy::t('base', 'The first element in a filter configuration must be the filter class.'));
                 }
-                $filterClass = $filter[0];
-                unset($filter[0]);
+                $filterClass = $filter['class'];
+                unset($filter['class']);
                 if (($pos = strpos($filterClass, '+')) !== false || ($pos = strpos($filterClass, '-')) !== false) {
                     $matched = preg_match("/\b{$actionID}\b/i", substr($filterClass, $pos + 1)) > 0;
                     if (($filterClass[$pos] === '+') === $matched) {
