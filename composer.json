@@ -1,7 +1,7 @@
 {
   "name": "mindy/controller",
   "homepage": "https://github.com/studio107/Mindy_Controller",
-  "version": "1.0.1",
+  "version": "1.0.1a",
   "license": "BSD",
   "autoload": {
     "psr-4": {
