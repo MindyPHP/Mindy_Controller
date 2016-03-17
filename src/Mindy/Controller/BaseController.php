@@ -18,7 +18,7 @@ use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Http\Request;
 use Mindy\Http\Traits\HttpErrors;
-
+use ReflectionClass;
 
 /**
  * CController manages a set of actions which deal with the corresponding user requests.
@@ -89,33 +89,18 @@ class BaseController
 {
     use Configurator, Accessors, HttpErrors;
 
-    /**
-     * Name of the hidden field storing persistent page states.
-     */
-    const STATE_INPUT_NAME = 'MINDY_PAGE_STATE';
-
     private $_id;
     private $_action;
     private $_module;
-    /**
-     * @var \Mindy\Http\Request
-     */
-    private $_request;
 
     /**
      * @param string $id id of this controller
      * @param \Mindy\Base\Module $module the module that this controller belongs to.
-     * @param \Mindy\Http\Request $request
      */
-    public function __construct($id, $module = null, Request $request)
+    public function __construct($id, $module = null)
     {
         $this->_id = $id;
         $this->_module = $module;
-        $this->_request = $request;
-
-        $signal = Mindy::app()->signal;
-        $signal->handler($this, 'beforeAction', [$this, 'beforeAction']);
-        $signal->handler($this, 'afterAction', [$this, 'afterAction']);
     }
 
     /**
@@ -131,7 +116,15 @@ class BaseController
      */
     public function getRequest()
     {
-        return $this->_request;
+        return Mindy::app()->request;
+    }
+
+    /**
+     * @return \Mindy\Event\EventManager
+     */
+    public function getEventManager()
+    {
+        return Mindy::app()->signal;
     }
 
     /**
@@ -142,7 +135,6 @@ class BaseController
      */
     public function beforeAction($owner, $action)
     {
-        return true;
     }
 
     /**
@@ -154,12 +146,6 @@ class BaseController
      */
     public function afterAction($action, $out)
     {
-        $app = Mindy::app();
-        if ($app->hasComponent('middleware')) {
-            $app->middleware->processView($this->getRequest(), $out);
-            $app->middleware->processResponse($this->getRequest());
-        }
-        echo $out;
     }
 
     /**
@@ -270,11 +256,13 @@ class BaseController
     public function run($actionID, $params = [])
     {
         if (($action = $this->createAction($actionID)) !== null) {
-            $signal = Mindy::app()->signal;
+            $signal = $this->getEventManager();
             $signal->send($this, 'beforeAction', $this, $action);
             ob_start();
             $this->runActionWithFilters($action, $this->filters(), $params);
-            $signal->send($this, 'afterAction', $action, ob_get_clean());
+            $out = ob_get_clean();
+            $signal->send($this, 'afterAction', $action, $out);
+            echo $out;
         } else {
             $this->missingAction($actionID);
         }
@@ -314,17 +302,19 @@ class BaseController
     {
         $priorAction = $this->_action;
         $this->_action = $action;
-        $signal = Mindy::app()->signal;
-        $results = $signal->send($this, 'beforeAction', $this, $action);
-        if ($results->getLast()->value) {
-            ob_start();
-            if ($action->runWithParams($params) === false) {
-                ob_end_clean();
-                $this->invalidActionParams($action);
-            } else {
-                $signal->send($this, 'afterAction', $action, ob_get_clean());
-            }
+        $signal = $this->getEventManager();
+        $signal->send($this, 'beforeAction', $this, $action);
+
+        ob_start();
+        if ($action->runWithParams($params) === false) {
+            ob_end_clean();
+            $this->invalidActionParams($action);
+        } else {
+            $out = ob_get_clean();
+            $signal->send($this, 'afterAction', $action, $out);
+            echo $out;
         }
+
         $this->_action = $priorAction;
     }
 
@@ -358,9 +348,7 @@ class BaseController
         $actions = $this->actions();
         $action = null;
         if (isset($actions[$actionID])) {
-            $config = is_array($actions[$actionID]) ? $actions[$actionID] : [
-                'class' => $actions[$actionID]
-            ];
+            $config = is_array($actions[$actionID]) ? $actions[$actionID] : ['class' => $actions[$actionID]];
             $action = Creator::createObject($config, $this, $actionID);
         }
 
@@ -422,7 +410,7 @@ class BaseController
     public function getModule()
     {
         if ($this->_module === null) {
-            $reflect = new \ReflectionClass(get_class($this));
+            $reflect = new ReflectionClass(get_class($this));
             $namespace = $reflect->getNamespaceName();
             $segments = explode('\\', $namespace);
             $this->_module = Mindy::app()->getModule($segments[1]);
