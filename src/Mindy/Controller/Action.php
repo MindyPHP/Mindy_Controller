@@ -24,7 +24,6 @@ namespace Mindy\Controller;
  */
 use Mindy\Base\Interfaces\IAction;
 use Mindy\Helper\Traits\BehaviorAccessors;
-use Mindy\Helper\Traits\Configurator;
 use ReflectionMethod;
 
 /**
