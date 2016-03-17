@@ -22,7 +22,6 @@ namespace Mindy\Controller;
  * @copyright 2008-2013 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-use Mindy\Base\Interfaces\IAction;
 use Mindy\Helper\Traits\Accessors;
 use ReflectionMethod;
 
