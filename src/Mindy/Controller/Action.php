@@ -23,7 +23,7 @@ namespace Mindy\Controller;
  * @license http://www.yiiframework.com/license/
  */
 use Mindy\Base\Interfaces\IAction;
-use Mindy\Helper\Traits\BehaviorAccessors;
+use Mindy\Helper\Traits\Accessors;
 use ReflectionMethod;
 
 /**
@@ -48,7 +48,7 @@ use ReflectionMethod;
  */
 abstract class Action implements IAction
 {
-    use BehaviorAccessors;
+    use Accessors;
 
     private $_id;
     private $_controller;
