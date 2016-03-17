@@ -22,7 +22,6 @@ namespace Mindy\Controller;
  * @copyright 2008-2013 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-use Mindy\Base\Interfaces\IFilter;
 use Mindy\Helper\Traits\Accessors;
 
 /**
