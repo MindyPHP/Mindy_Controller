@@ -15,7 +15,6 @@
 namespace Mindy\Controller;
 
 use Mindy\Exception\Exception;
-use Mindy\Base\Interfaces\IFilter;
 use Mindy\Base\Mindy;
 use Mindy\Helper\Creator;
 use Mindy\Utils\BaseList;
