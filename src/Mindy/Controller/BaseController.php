@@ -368,7 +368,7 @@ class BaseController
     public function missingAction($actionID)
     {
         throw new HttpException(404, Mindy::t('base', 'The system is unable to find the requested action "{action}".',
-            ['{action}' => $actionID == '' ? $this->defaultAction : $actionID]));
+            ['{action}' => $actionID]));
     }
 
     /**
