@@ -11,6 +11,7 @@ namespace Mindy\Controller;
  * @license http://www.yiiframework.com/license/
  */
 use Mindy\Base\Mindy;
+use Mindy\Base\Module;
 use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
 use Mindy\Helper\Creator;
@@ -427,9 +428,11 @@ class BaseController
      */
     public function forward($controllerClass, $action, $params, $module)
     {
-        $app = Mindy::app();
-        /** @var \Modules\Admin\Components\ModelAdmin $admin */
-        $controller = Creator::createObject($controllerClass, time(), $app->getModule($module), $this->getRequest());
+        if (($module instanceof Module) == false) {
+            $module = Mindy::app()->getModule($module);
+        }
+        /** @var \Mindy\Controller\BaseController $controller */
+        $controller = Creator::createObject($controllerClass, time(), $module, $this->getRequest());
         $controller->run($action, $params);
     }
 }
