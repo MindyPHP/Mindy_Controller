@@ -417,4 +417,19 @@ class BaseController
         }
         return $this->_module;
     }
+
+    /**
+     * Forward controller action to another controller action
+     * @param $controllerClass
+     * @param $action
+     * @param $params
+     * @param $module
+     */
+    public function forward($controllerClass, $action, $params, $module)
+    {
+        $app = Mindy::app();
+        /** @var \Modules\Admin\Components\ModelAdmin $admin */
+        $controller = Creator::createObject($controllerClass, time(), $app->getModule($module), $this->getRequest());
+        $controller->run($action, $params);
+    }
 }
