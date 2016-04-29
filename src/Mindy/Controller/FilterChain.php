@@ -17,7 +17,7 @@ namespace Mindy\Controller;
 use Mindy\Exception\Exception;
 use Mindy\Base\Mindy;
 use Mindy\Helper\Creator;
-use Mindy\Utils\BaseList;
+use Mindy\Helper\BaseList;
 
 /**
  * FilterChain class file.
