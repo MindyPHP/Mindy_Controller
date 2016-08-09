@@ -74,7 +74,7 @@ use ReflectionClass;
  * @property string $id ID of the controller.
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any).
  * @property string $route The route (module ID, controller ID and action ID) of the current request.
- * @property \Mindy\Http\Request $request The request component
+ * @property \Mindy\Http\Http $request The request component
  * @property \Mindy\Base\Module $module The module that this controller belongs to. It returns null
  * if the controller does not belong to any module.
  *
@@ -113,7 +113,7 @@ class BaseController
     }
 
     /**
-     * @return Request
+     * @return \Mindy\Http\Http
      */
     public function getRequest()
     {
@@ -253,20 +253,20 @@ class BaseController
      * @see filters
      * @see createAction
      * @see runAction
+     * @return null|\Psr\Http\Message\ResponseInterface
      */
     public function run($actionID, $params = [])
     {
-        if (($action = $this->createAction($actionID)) !== null) {
-            $signal = $this->getEventManager();
-            $signal->send($this, 'beforeAction', $this, $action);
-            ob_start();
-            $this->runActionWithFilters($action, $this->filters(), $params);
-            $out = ob_get_clean();
-            $signal->send($this, 'afterAction', $action, $out);
-            echo $out;
-        } else {
+        $action = $this->createAction($actionID);
+        if ($action === null) {
             $this->missingAction($actionID);
         }
+
+        $signal = $this->getEventManager();
+        $signal->send($this, 'beforeAction', $this, $action);
+        $out = $this->runActionWithFilters($action, $this->filters(), $params);
+        $signal->send($this, 'afterAction', $this, $action);
+        return $out;
     }
 
     /**
@@ -283,12 +283,13 @@ class BaseController
     public function runActionWithFilters($action, $filters, $params = [])
     {
         if (empty($filters)) {
-            $this->runAction($action, $params);
+            return $this->runAction($action, $params);
         } else {
             $priorAction = $this->_action;
             $this->_action = $action;
-            FilterChain::create($this, $action, $filters)->run($params);
+            $out = FilterChain::create($this, $action, $filters)->run($params);
             $this->_action = $priorAction;
+            return $out;
         }
     }
 
@@ -298,25 +299,20 @@ class BaseController
      * and the action starts to run.
      * @param Action $action action to run
      * @param array $params
+     * @return string|\Psr\Http\Message\ResponseInterface|null
      */
     public function runAction($action, $params = [])
     {
         $priorAction = $this->_action;
         $this->_action = $action;
-        $signal = $this->getEventManager();
-        $signal->send($this, 'beforeAction', $this, $action);
+        $out = $action->runWithParams($params);
 
-        ob_start();
-        if ($action->runWithParams($params) === false) {
-            ob_end_clean();
-            $this->invalidActionParams($action);
-        } else {
-            $out = ob_get_clean();
-            $signal->send($this, 'afterAction', $action, $out);
-            echo $out;
+        if ($out === false) {
+            return $this->invalidActionParams($action);
         }
 
         $this->_action = $priorAction;
+        return $out;
     }
 
     /**
@@ -328,7 +324,7 @@ class BaseController
      */
     public function invalidActionParams($action)
     {
-        throw new HttpException(400, Mindy::t('base', 'Your request is invalid.'));
+        throw new HttpException(400, 'Invalid request');
     }
 
     /**
