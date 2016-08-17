@@ -124,7 +124,6 @@ abstract class Action implements IAction
                 return false;
             }
         }
-        $method->invokeArgs($object, $ps);
-        return true;
+        return $method->invokeArgs($object, $ps);
     }
 }

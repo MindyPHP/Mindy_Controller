@@ -1,7 +1,5 @@
 <?php
 /**
- *
- *
  * All rights reserved.
  *
  * @author Falaleev Maxim
@@ -14,8 +12,7 @@
 
 namespace Mindy\Controller;
 
-use Mindy\Exception\Exception;
-use Mindy\Base\Mindy;
+use Exception;
 use Mindy\Helper\Creator;
 use Mindy\Helper\BaseList;
 
@@ -71,7 +68,7 @@ class FilterChain extends BaseList
      * @param \Mindy\Controller\BaseController $controller the controller who executes the action.
      * @param Action $action the action being filtered by this chain.
      * @param array $filters list of filters to be applied to the action.
-     * @throws \Mindy\Exception\Exception
+     * @throws \Exception
      * @return FilterChain
      */
     public static function create($controller, $action, $filters)
@@ -92,7 +89,7 @@ class FilterChain extends BaseList
             } elseif (is_array($filter)) {
                 // array('path.to.class [+|- action1, action2]','param1'=>'value1',...)
                 if (!isset($filter['class'])) {
-                    throw new Exception(Mindy::t('base', 'The first element in a filter configuration must be the filter class.'));
+                    throw new Exception('The first element in a filter configuration must be the filter class');
                 }
                 $filterClass = $filter['class'];
                 unset($filter['class']);
@@ -130,7 +127,7 @@ class FilterChain extends BaseList
         if ($item instanceof IFilter) {
             parent::insertAt($index, $item);
         } else {
-            throw new Exception(Mindy::t('base', 'FilterChain can only take objects implementing the IFilter interface.'));
+            throw new Exception('FilterChain can only take objects implementing the IFilter interface');
         }
     }
 
@@ -144,7 +141,6 @@ class FilterChain extends BaseList
     {
         if ($this->offsetExists($this->filterIndex)) {
             $filter = $this->itemAt($this->filterIndex++);
-            Mindy::app()->logger->info('Running filter ' . ($filter instanceof InlineFilter ? get_class($this->controller) . '.filter' . $filter->name . '()' : get_class($filter) . '.filter()'), [], 'system.web.filters.FilterChain');
             $filter->filter($this, $params);
         } else {
             $this->controller->runAction($this->action, $params);

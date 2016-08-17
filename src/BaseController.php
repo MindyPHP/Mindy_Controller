@@ -10,15 +10,14 @@ namespace Mindy\Controller;
  * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+use Exception;
 use Mindy\Base\Mindy;
 use Mindy\Base\Module;
-use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
 use Mindy\Helper\Creator;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Http\Request;
-use Mindy\Http\Traits\HttpErrors;
 use ReflectionClass;
 
 /**
@@ -88,7 +87,7 @@ use ReflectionClass;
  */
 class BaseController
 {
-    use Configurator, Accessors, HttpErrors;
+    use Configurator, Accessors;
 
     private $_id;
     private $_action;
@@ -112,20 +111,39 @@ class BaseController
         return [];
     }
 
+    public function errorMessage($code)
+    {
+        $codes = [
+            400 => 'Invalid request. Please do not repeat this request again.',
+            403 => 'You are not authorized to perform this action.',
+            404 => 'The requested page does not exist.',
+            500 => 'Error',
+        ];
+        $message = isset($codes[$code]) ? $codes[$code] : 'Unknown error';
+
+        if (Mindy::app()->hasComponent('translate')) {
+            return Mindy::app()->translate->t('main', $message);
+        } else {
+            return $message;
+        }
+    }
+
+    /**
+     * @param $code
+     * @param null $message
+     * @throws HttpException
+     */
+    public function error($code, $message = null)
+    {
+        throw new HttpException($code, $message === null ? $this->errorMessage($code) : $message);
+    }
+
     /**
      * @return \Mindy\Http\Http
      */
     public function getRequest()
     {
         return Mindy::app()->request;
-    }
-
-    /**
-     * @return \Mindy\Event\EventManager
-     */
-    public function getEventManager()
-    {
-        return Mindy::app()->signal;
     }
 
     /**
@@ -261,12 +279,7 @@ class BaseController
         if ($action === null) {
             $this->missingAction($actionID);
         }
-
-        $signal = $this->getEventManager();
-        $signal->send($this, 'beforeAction', $this, $action);
-        $out = $this->runActionWithFilters($action, $this->filters(), $params);
-        $signal->send($this, 'afterAction', $this, $action);
-        return $out;
+        return $this->runActionWithFilters($action, $this->filters(), $params);
     }
 
     /**
@@ -364,8 +377,7 @@ class BaseController
      */
     public function missingAction($actionID)
     {
-        throw new HttpException(404, Mindy::t('base', 'The system is unable to find the requested action "{action}".',
-            ['{action}' => $actionID]));
+        throw new HttpException(404, 'The system is unable to find the requested action "' . $actionID . '"');
     }
 
     /**

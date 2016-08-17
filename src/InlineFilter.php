@@ -4,13 +4,13 @@ namespace Mindy\Controller;
 
 /**
  * CInlineFilter class file.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright 2008-2013 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-use Mindy\Exception\Exception;
+use Exception;
+
 use Mindy\Base\Mindy;
 
 /**
@@ -46,10 +46,7 @@ class InlineFilter extends Filter
             $filter->name = $filterName;
             return $filter;
         } else {
-            throw new Exception(Mindy::t('base', 'Filter "{filter}" is invalid. Controller "{class}" does not have the filter method "filter{filter}".', [
-                '{filter}' => $filterName,
-                '{class}' => get_class($controller)
-            ]));
+            throw new Exception('Filter "' . $filterName . '" is invalid. Controller "{' . get_class($controller) . '}" does not have the filter method "filter{filter}"');
         }
     }
 

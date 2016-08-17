@@ -1,22 +1,26 @@
 {
   "name": "mindy/controller",
-  "homepage": "https://github.com/studio107/Mindy_Controller",
-  "license": "BSD",
+  "type": "library",
+  "homepage": "https://github.com/MindyPHP/Mindy_Controller",
+  "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Mindy\\Controller\\": "src/Mindy/Controller"
+      "Mindy\\Controller\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mindy\\Controller\\Tests\\": "test/"
     }
   },
   "require": {
-    "php": ">=5.4"
+    "php": ">=5.6",
+    "mindy/helper": "^1.2",
+    "mindy/exception": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "3.7.32",
-    "phpunit/php-invoker": "1.1.3",
-    "phpunit/dbunit": "1.3.1",
-    "phpunit/phpunit-selenium": "1.3.3",
-    "phpunit/phpunit-story": "1.0.2",
-    "satooshi/php-coveralls": "dev-master"
+    "phpunit/phpunit": "*",
+    "phpunit/php-code-coverage": "*"
   },
   "authors": [
     {
@@ -27,6 +31,6 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/studio107/Mindy_Controller/issues?state=open"
+    "issues": "https://github.com/MindyPHP/Mindy_Controller/issues?state=open"
   }
 }
